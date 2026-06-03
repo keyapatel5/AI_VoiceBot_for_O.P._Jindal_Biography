@@ -20,7 +20,7 @@
     "category": "Basic",
     "question_english": "In which year was O P Jindal born?",
     "answer_english": "He was born on 7 August 1930",
-    "question_hindi": "O P Jindal ka janm kis varsh hua?",
+    "question_hindi": "ओ पी जिंदल का जन्म किस वर्ष हुआ था?",
     "answer_hindi": "उनका जन्म 7 अगस्त 1930 को हुआ था"
   },
   {
@@ -67,7 +67,7 @@
     "id": 9,
     "category": "Basic",
     "question_english": "Who were O P Jindal's parents?",
-    "answer_english": "His father was Kanshi Ram, a farmer, and his mother was Shanti Devi. He was born into a simple agricultural family in Nalwa village, Haryana.",
+    "answer_english": "His father was Netram Jindal, a farmer, and his mother was Shanti Devi. He was born into a simple agricultural family in Nalwa village, Haryana.",
     "question_hindi": "ओ पी जिंदल के माता-पिता कौन थे?",
     "answer_hindi": "उनके पिता कांशी राम एक किसान थे और उनकी मां शांति देवी थीं। उनका जन्म हरियाणा के नलवा गांव में एक साधारण कृषक परिवार में हुआ था।"
   },
@@ -1163,41 +1163,41 @@
     "id": 146,
     "category": "Family",
     "question_english": "Who is the mother of Sajjan Jindal?",
-    "answer_english": "The mother of Sajjan Jindal is Sunita Jindal",
+    "answer_english": "The mother of Sajjan Jindal is Vidya Devi",
     "question_hindi": "सज्जन जिंदल की माँ कौन है?",
-    "answer_hindi": "सज्जन जिंदल की मां सुनीता जिंदल हैं"
+    "answer_hindi": "सज्जन जिंदल की मां विद्या देवी हैं"
   },
   {
     "id": 147,
     "category": "Family",
     "question_english": "Who is the mother of Prithviraj Jindal?",
-    "answer_english": "The mother of Prithviraj Jindal is Sunita Jindal",
+    "answer_english": "The mother of Prithviraj Jindal is Vidya Devi",
     "question_hindi": "पृथ्वीराज जिंदल की माता कौन है?",
-    "answer_hindi": "पृथ्वीराज जिंदल की माता का नाम सुनीता जिंदल है"
+    "answer_hindi": "पृथ्वीराज जिंदल की माता का नाम विद्या देवी है"
   },
   {
     "id": 148,
     "category": "Family",
     "question_english": "Who is the mother of Ratan Jindal?",
-    "answer_english": "The mother of Ratan Jindal is Sunita Jindal",
+    "answer_english": "The mother of Ratan Jindal is Vidya Devi",
     "question_hindi": "रतन जिंदल की माँ कौन है?",
-    "answer_hindi": "रतन जिंदल की मां सुनीता जिंदल हैं"
+    "answer_hindi": "रतन जिंदल की मां विद्या देवी हैं"
   },
   {
     "id": 149,
     "category": "Family",
     "question_english": "Who is the mother of Naveen Jindal?",
-    "answer_english": "The mother of Naveen Jindal is Sunita Jindal",
+    "answer_english": "The mother of Naveen Jindal is Vidya Devi",
     "question_hindi": "नवीन जिंदल की माँ कौन है?",
-    "answer_hindi": "नवीन जिंदल की मां सुनीता जिंदल हैं"
+    "answer_hindi": "नवीन जिंदल की मां विद्या देवी हैं"
   },
   {
     "id": 150,
     "category": "Family",
     "question_english": "Who is the mother of Naveen Jindal?",
-    "answer_english": "The mother of Naveen Jindal is Sunita Jindal",
+    "answer_english": "The mother of Naveen Jindal is Vidya Devi",
     "question_hindi": "नवीन जिंदल की माँ कौन है?",
-    "answer_hindi": "नवीन जिंदल की मां सुनीता जिंदल हैं"
+    "answer_hindi": "नवीन जिंदल की मां विद्या देवी हैं"
   },
   {
     "id": 151,
@@ -1267,7 +1267,7 @@
     "id": 159,
     "category": "Basic",
     "question_english": "What was the profession of O P Jindal's father?",
-    "answer_english": "His father Kanshi Ram was a farmer",
+    "answer_english": "His father Netram Jindal was a farmer",
     "question_hindi": "ओ पी जिंदल के पिता का पेशा क्या था?",
     "answer_hindi": "उनके पिता कांशीराम एक किसान थे"
   },
@@ -1283,7 +1283,7 @@
     "id": 161,
     "category": "Basic",
     "question_english": "What is the name of O P Jindal's father?",
-    "answer_english": "His father's name was Kanshi Ram",
+    "answer_english": "His father's name was Netram Jindal",
     "question_hindi": "ओ पी जिंदल के पिता का क्या नाम है?",
     "answer_hindi": "उनके पिता का नाम कांशीराम था"
   },
@@ -6892,23 +6892,47 @@
     "category": "Biography",
     "question_english": "When was O. P. Jindal born?",
     "answer_english": "He was born on 7 August 1930",
-    "question_hindi": "O. P. Jindal ka janm kab hua?",
-    "answer_hindi": "Unka janm 7 August 1930 ko hua tha"
+    "question_hindi": "ओ. पी. जिंदल का जन्म कब हुआ था?",
+    "answer_hindi": "उनका जन्म 7 अगस्त 1930 को हुआ था।"
   },
   {
     "id": 863,
     "category": "Biography",
     "question_english": "When did O P Jindal die?",
     "answer_english": "He passed away on 31 March 2005 in a helicopter crash near Saharanpur, Uttar Pradesh",
-    "question_hindi": "O P Jindal ka nidhan kab hua?",
-    "answer_hindi": "Unka nidhan 31 March 2005 ko ek helicopter durghatna mein Saharanpur, Uttar Pradesh ke paas hua"
+    "question_hindi": "ओ. पी. जिंदल की मृत्यु कब हुई?",
+    "answer_hindi": "उनका निधन 31 मार्च 2005 को उत्तर प्रदेश में सहारनपुर के पास एक हेलीकॉप्टर दुर्घटना में हुआ था।"
   },
   {
     "id": 864,
     "category": "Biography",
     "question_english": "When was OP Jindal died?",
     "answer_english": "He passed away on 31 March 2005 in a helicopter crash near Saharanpur, Uttar Pradesh",
-    "question_hindi": "OP Jindal ki mrityu kab hui?",
-    "answer_hindi": "Unka nidhan 31 March 2005 ko ek helicopter durghatna mein Saharanpur, Uttar Pradesh ke paas hua"
+    "question_hindi": "ओपी जिंदल की मृत्यु कब हुई थी?",
+    "answer_hindi": "उनका निधन 31 मार्च 2005 को उत्तर प्रदेश में सहारनपुर के पास एक हेलीकॉप्टर दुर्घटना में हुआ था।"
+  },
+  {
+    "id": 865,
+    "category": "Biography",
+    "question_english": "Who is OP Jindal(Om Prakash Jindal)?",
+    "answer_english": "Om Prakash Jindal, also known as O.P. Jindal, was an Indian industrialist and politician. He was the founder of the OP Jindal Group, a major steel and power conglomerate.",
+    "question_hindi": "ओ पी जिंदल कौन है",
+    "answer_hindi": "ओम प्रकाश जिंदल, जिन्हें ओ. पी. जिंदल के नाम से भी जाना जाता है, एक भारतीय उद्योगपति और राजनेता थे। वह एक प्रमुख स्टील और पावर समूह, 'ओपी जिंदल ग्रुप' के संस्थापक थे।"
+  },
+  {
+    "id": 866,
+    "category": "Family",
+    "question_english": "Who is Vidya Devi?",
+    "answer_english": "Vidya Devi was the first wife of O.P. Jindal.",
+    "question_hindi": "विद्या देवी कौन थीं?",
+    "answer_hindi": "विद्या देवी ओ.पी. जिंदल की पहली पत्नी थीं।"
+  },
+  {
+    "id": 867,
+    "category": "Family",
+    "question_english": "Who is Sunita Jindal?",
+    "answer_english": "Sunita Jindal was the second wife of O.P. Jindal.",
+    "question_hindi": "सूनिता जिंदल कौन थीं?",
+    "answer_hindi": "सूनिता जिंदल ओ.पी. जिंदल की दूसरी पत्नी थीं।"
   }
 ]

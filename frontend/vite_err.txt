@@ -1,0 +1,125 @@
+[31mfailed to load config from D:\jingle_steel\JindalBot\frontend\vite.config.js[39m
+[2m10:47:04 AM[22m [31m[1m[vite][22m[39m Cannot find package 'vite' imported from D:\jingle_steel\JindalBot\frontend\vite.config.js.timestamp-1780463824459-2b314e67cd443.mjs
+[2m10:47:04 AM[22m [31m[1m[vite][22m[39m server restart failed
+[2m10:47:05 AM[22m [31m[1m[vite][22m[39m Pre-transform error: [postcss] ENOENT: no such file or directory, open 'D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\css\preflight.css'
+[2m10:47:05 AM[22m [31m[1m[vite][22m[39m Pre-transform error: [postcss] ENOENT: no such file or directory, open 'D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\css\preflight.css'
+[2m10:47:06 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: [postcss] ENOENT: no such file or directory, open 'D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\css\preflight.css'[39m
+  Plugin: [35mvite:css[39m
+  File: [36mD:/jingle_steel/JindalBot/frontend/src/index.css[39m:undefined:NaN
+      at Object.readFileSync (node:fs:442:20)
+      at preflight (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\corePlugins.js:555:66)
+      at registerPlugins (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:815:61)
+      at createContext (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:1221:5)
+      at getContext (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:1278:19)
+      at D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupTrackingContext.js:118:81
+      at D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\processTailwindFeatures.js:46:11
+      at plugins (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\plugin.js:38:69)
+      at LazyResult.runOnRoot (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:361:16)
+      at LazyResult.runAsync (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:290:26)
+      at LazyResult.async (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:192:30)
+      at LazyResult.then (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:449:17)
+[2m10:47:06 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: [postcss] ENOENT: no such file or directory, open 'D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\css\preflight.css'[39m
+  Plugin: [35mvite:css[39m
+  File: [36mD:/jingle_steel/JindalBot/frontend/src/index.css[39m:undefined:NaN
+      at Object.readFileSync (node:fs:442:20)
+      at preflight (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\corePlugins.js:555:66)
+      at registerPlugins (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:815:61)
+      at createContext (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:1221:5)
+      at getContext (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:1278:19)
+      at D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupTrackingContext.js:118:81
+      at D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\processTailwindFeatures.js:46:11
+      at plugins (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\plugin.js:38:69)
+      at LazyResult.runOnRoot (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:361:16)
+      at LazyResult.runAsync (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:290:26)
+      at LazyResult.async (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:192:30)
+      at LazyResult.then (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:449:17)
+[2m10:47:06 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: [postcss] ENOENT: no such file or directory, open 'D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\css\preflight.css'[39m
+  Plugin: [35mvite:css[39m
+  File: [36mD:/jingle_steel/JindalBot/frontend/src/index.css[39m:undefined:NaN
+      at Object.readFileSync (node:fs:442:20)
+      at preflight (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\corePlugins.js:555:66)
+      at registerPlugins (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:815:61)
+      at createContext (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:1221:5)
+      at getContext (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:1278:19)
+      at D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupTrackingContext.js:118:81
+      at D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\processTailwindFeatures.js:46:11
+      at plugins (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\plugin.js:38:69)
+      at LazyResult.runOnRoot (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:361:16)
+      at LazyResult.runAsync (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:290:26)
+      at LazyResult.async (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:192:30)
+      at LazyResult.then (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:449:17)
+[2m10:47:06 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: [postcss] ENOENT: no such file or directory, open 'D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\css\preflight.css'[39m
+  Plugin: [35mvite:css[39m
+  File: [36mD:/jingle_steel/JindalBot/frontend/src/index.css[39m:undefined:NaN
+      at Object.readFileSync (node:fs:442:20)
+      at preflight (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\corePlugins.js:555:66)
+      at registerPlugins (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:815:61)
+      at createContext (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:1221:5)
+      at getContext (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:1278:19)
+      at D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupTrackingContext.js:118:81
+      at D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\processTailwindFeatures.js:46:11
+      at plugins (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\plugin.js:38:69)
+      at LazyResult.runOnRoot (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:361:16)
+      at LazyResult.runAsync (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:290:26)
+      at LazyResult.async (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:192:30)
+      at LazyResult.then (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:449:17)
+[2m10:47:06 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: [postcss] ENOENT: no such file or directory, open 'D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\css\preflight.css'[39m
+  Plugin: [35mvite:css[39m
+  File: [36mD:/jingle_steel/JindalBot/frontend/src/index.css[39m:undefined:NaN
+      at Object.readFileSync (node:fs:442:20)
+      at preflight (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\corePlugins.js:555:66)
+      at registerPlugins (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:815:61)
+      at createContext (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:1221:5)
+      at getContext (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:1278:19)
+      at D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupTrackingContext.js:118:81
+      at D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\processTailwindFeatures.js:46:11
+      at plugins (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\plugin.js:38:69)
+      at LazyResult.runOnRoot (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:361:16)
+      at LazyResult.runAsync (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:290:26)
+      at LazyResult.async (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:192:30)
+      at LazyResult.then (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:449:17)
+[2m10:47:09 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: [postcss] ENOENT: no such file or directory, open 'D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\css\preflight.css'[39m
+  Plugin: [35mvite:css[39m
+  File: [36mD:/jingle_steel/JindalBot/frontend/src/index.css[39m:undefined:NaN
+      at Object.readFileSync (node:fs:442:20)
+      at preflight (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\corePlugins.js:555:66)
+      at registerPlugins (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:815:61)
+      at createContext (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:1221:5)
+      at getContext (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:1278:19)
+      at D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupTrackingContext.js:118:81
+      at D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\processTailwindFeatures.js:46:11
+      at plugins (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\plugin.js:38:69)
+      at LazyResult.runOnRoot (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:361:16)
+      at LazyResult.runAsync (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:290:26)
+      at LazyResult.async (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:192:30)
+      at LazyResult.then (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:449:17)
+[2m10:47:09 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: [postcss] ENOENT: no such file or directory, open 'D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\css\preflight.css'[39m
+  Plugin: [35mvite:css[39m
+  File: [36mD:/jingle_steel/JindalBot/frontend/src/index.css[39m:undefined:NaN
+      at Object.readFileSync (node:fs:442:20)
+      at preflight (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\corePlugins.js:555:66)
+      at registerPlugins (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:815:61)
+      at createContext (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:1221:5)
+      at getContext (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:1278:19)
+      at D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupTrackingContext.js:118:81
+      at D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\processTailwindFeatures.js:46:11
+      at plugins (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\plugin.js:38:69)
+      at LazyResult.runOnRoot (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:361:16)
+      at LazyResult.runAsync (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:290:26)
+      at LazyResult.async (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:192:30)
+      at LazyResult.then (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:449:17)
+[2m10:47:10 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: [postcss] ENOENT: no such file or directory, open 'D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\css\preflight.css'[39m
+  Plugin: [35mvite:css[39m
+  File: [36mD:/jingle_steel/JindalBot/frontend/src/index.css[39m:undefined:NaN
+      at Object.readFileSync (node:fs:442:20)
+      at preflight (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\corePlugins.js:555:66)
+      at registerPlugins (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:815:61)
+      at createContext (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:1221:5)
+      at getContext (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupContextUtils.js:1278:19)
+      at D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\lib\setupTrackingContext.js:118:81
+      at D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\processTailwindFeatures.js:46:11
+      at plugins (D:\jingle_steel\JindalBot\frontend\node_modules\tailwindcss\lib\plugin.js:38:69)
+      at LazyResult.runOnRoot (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:361:16)
+      at LazyResult.runAsync (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:290:26)
+      at LazyResult.async (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:192:30)
+      at LazyResult.then (D:\jingle_steel\JindalBot\frontend\node_modules\postcss\lib\lazy-result.js:449:17)
