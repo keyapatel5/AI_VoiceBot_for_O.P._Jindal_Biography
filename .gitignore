@@ -3,8 +3,9 @@ __pycache__/
 *.pyc
 .vite/
 node_modules/
-backend_stderr.log
-backend_stdout.log
+backend*.log
+backend*.txt
+tmp_*
 logs/
 tmp_audio/
 generated_audio/

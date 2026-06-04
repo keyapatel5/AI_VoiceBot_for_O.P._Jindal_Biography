@@ -11,7 +11,6 @@ export default function App() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-  const [videoUrl, setVideoUrl] = useState(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const mediaRef = useRef(null);
@@ -77,9 +76,9 @@ export default function App() {
         playAudio(data.audio_data);
       }
 
-      // Play video if available (D-ID)
+      // Play video if available
       if (data.video_url) {
-        setVideoUrl(data.video_url);
+        // handled by isSpeaking state in the video player
       }
     } catch (e) {
       console.error("Error parsing response", e);
@@ -175,11 +174,14 @@ export default function App() {
                     isSpeaking ? "scale-105 border-stone-400" : "grayscale-[0.8] opacity-80"
                   )}
                 >
-                  {videoUrl ? (
+                  {isSpeaking ? (
                     <video
-                      src={videoUrl}
+                      key={Date.now()}
+                      src="/avatar.mp4"
                       autoPlay
-                      onEnded={() => setVideoUrl(null)}
+                      muted
+                      loop
+                      playsInline
                       className="w-full h-full object-cover rounded-full scale-[1.05]"
                     />
                   ) : (

@@ -40,12 +40,15 @@ for _d in [TEMP_DIR, LOG_DIR]:
 
 VOICE_EN = "en-IN-PrabhatNeural"
 VOICE_HI = "hi-IN-MadhurNeural"
+VOICE_GU = "gu-IN-NiranjanNeural"
 
 COLLECTION = "knowledge_base"
 EN_Q_KEY   = "question_english"
 EN_A_KEY   = "answer_english"
 HI_Q_KEY   = "question_hindi"
 HI_A_KEY   = "answer_hindi"
+GU_Q_KEY   = "question_gujarati"
+GU_A_KEY   = "answer_gujarati"
 
 MIN_MATCH  = 0.35
 SEM_FLOOR  = 0.25
@@ -60,7 +63,7 @@ SARVAM_API_URL = "https://api.sarvam.ai/speech-to-text"
 _CPU_POOL = ThreadPoolExecutor(max_workers=2)
 
 HINDI_CONFUSED_LANGS = {
-    "ur", "ne", "mr", "pa", "gu", "bn", "ar", "fa", "ja", "zh"
+    "ur", "ne", "mr", "pa", "bn", "ar", "fa", "ja", "zh"
 }
 
 # ============================================================
@@ -226,6 +229,20 @@ class Fallback:
                 "जिंदल स्टील के बारे में पूछें या ओ.पी. जिंदल के व्यापार के बारे में!",
             ],
         }
+        self.gu = {
+            "general": [
+                "કૃપા કરીને મને ઓ.પી. જિંદલના જીવન, પરિવાર, વ્યવસાય અથવા સિદ્ધિઓ વિશે પૂછો!",
+                "આ મારી નિષ્ણાતતાની બહાર છે. ઓ.પી. જિંદલ વિશે પૂછો!",
+                "મારી પાસે આ વિશે માહિતી નથી! ઓ.પી. જિંદલ વિશે પૂછો!",
+                "ઓ.પી. જિંદલ વિશે કંઈપણ પૂછો, હું જવાબ આપવાનો પ્રયત્ન કરીશ!",
+            ],
+            "family": [
+                "કૃપા કરીને ઓ.પી. જિંદલના પત્ની, બાળકો અથવા માતા-પિતા વિશે પૂછો!",
+            ],
+            "business": [
+                "જિંદલ સ્ટીલ વિશે પૂછો અથવા ઓ.પી. જિંદલના વ્યવસાય વિશે પૂછો!",
+            ],
+        }
         self._fam = {
             "family", "wife", "son", "daughter", "children",
             "father", "mother", "patni", "biwi", "beta",
@@ -240,8 +257,12 @@ class Fallback:
     def get(self, query, lang):
         w = set(re.findall(r"\w+", query.lower()))
         cat = "family" if w & self._fam else "business" if w & self._biz else "general"
-        hi = lang in ("hi", "hindi", "hinglish")
-        pool = (self.hi if hi else self.en).get(cat, (self.hi if hi else self.en)["general"])
+        if lang in ("gu", "gujarati"):
+            pool = self.gu.get(cat, self.gu["general"])
+        elif lang in ("hi", "hindi", "hinglish"):
+            pool = self.hi.get(cat, self.hi["general"])
+        else:
+            pool = self.en.get(cat, self.en["general"])
         last = self._last.get(f"{lang}_{cat}")
         avail = [r for r in pool if r != last] or pool
         pick = random.choice(avail)
@@ -379,9 +400,12 @@ class Translator:
 
     def detect_translate(self, text):
         has_dev = bool(re.search(r"[\u0900-\u097F]", text))
+        has_guj = bool(re.search(r"[\u0A80-\u0AFF]", text))
         words = text.lower().split()
         hc = sum(1 for w in words if re.sub(r"[^\w]", "", w) in self.words)
         total = len(words)
+        if has_guj:
+            return text, "gujarati"
         if has_dev:
             return self.translate(text), "hindi"
         elif total > 0 and (hc / total) > 0.15:
@@ -424,7 +448,7 @@ def norm(text):
     t = re.sub(r"o\.p\.", "op", t)
     t = re.sub(r"o\s*p\s*jindal", "op jindal", t)
     t = re.sub(r"['\u2018\u2019\u0027]s\b", "", t)
-    t = re.sub(r"[^\w\s\u0900-\u097F]", " ", t)
+    t = re.sub(r"[^\w\s\u0900-\u097F\u0A80-\u0AFF]", " ", t)
     return re.sub(r"\s+", " ", t).strip()
 
 
@@ -434,13 +458,20 @@ def tok(text):
 
 def lang_detect(text, stt_hint: str = None):
     hc = len(re.findall(r"[\u0900-\u097F]", text))
+    gc = len(re.findall(r"[\u0A80-\u0AFF]", text))
     total = len(text.strip())
     if total == 0:
         return "en"
+    if gc > 0 and stt_hint == "gu":
+        return "gu"
+    if (gc / total) > 0.3:
+        return "gu"
     if (hc / total) > 0.3:
         return "hi"
     if stt_hint == "hi" and hc > 0:
         return "hi"
+    if stt_hint == "gu" and gc > 0:
+        return "gu"
     words = text.lower().split()
     wc = sum(1 for w in words if re.sub(r"[^\w]", "", w) in TR.words)
     if len(words) > 0 and wc >= 2:
@@ -778,6 +809,7 @@ class Engine:
 
 eng_en = Engine("EN")
 eng_hi = Engine("HI")
+eng_gu = Engine("GU")
 
 
 # ============================================================
@@ -800,6 +832,7 @@ class DBWatcher:
                 log.info(f"[DBWatcher] reloading...")
                 eng_en.load(mdb, COLLECTION, EN_Q_KEY, EN_A_KEY)
                 eng_hi.load(mdb, COLLECTION, HI_Q_KEY, HI_A_KEY)
+                eng_gu.load(mdb, COLLECTION, GU_Q_KEY, GU_A_KEY)
                 cache.clear(); self._last_cnt = cnt
         except Exception as e:
             log.error(f"[DBWatcher] {e}")
@@ -839,11 +872,14 @@ def search(query, stt_lang: str = None):
     en_n, en_t = norm(tq), tok(tq)
     hi_n       = norm(query)
     hi_t       = [w for w in hi_n.split() if len(w) > 1]
+    gu_n       = norm(query)
+    gu_t       = [w for w in gu_n.split() if len(w) > 1]
     tr_n       = norm(TR.translate(query))
     tr_t       = tok(TR.translate(query))
 
     log.info(f"EN_Q: {en_n}")
     log.info(f"HI_Q: {hi_n}")
+    log.info(f"GU_Q: {gu_n}")
 
     # SPEED: encode each unique string once, reuse across engine calls
     _emb_cache: dict = {}
@@ -873,6 +909,19 @@ def search(query, stt_lang: str = None):
         log.info(f"EN_RESULT: {s_en:.3f} | {str(a_en)[:50] if a_en else '-'}")
         if a_hi and (not a_en or s_hi >= s_en):
             return a_hi, s_hi, "hindi_db", lang
+        if a_en:
+            return a_en, s_en, "english_db", lang
+
+    elif lang == "gu":
+        e_gu = _emb(gu_n)
+        a_gu, s_gu, _ = eng_gu.search(gu_n, gu_t, boost=True, qe_precomputed=e_gu)
+        log.info(f"GU_RESULT: {s_gu:.3f} | {str(a_gu)[:50] if a_gu else '-'}")
+        if a_gu and s_gu >= EARLY_EXIT:
+            return a_gu, s_gu, "gujarati_db", lang
+        a_en, s_en = _best_en()
+        log.info(f"EN_RESULT: {s_en:.3f} | {str(a_en)[:50] if a_en else '-'}")
+        if a_gu and (not a_en or s_gu >= s_en):
+            return a_gu, s_gu, "gujarati_db", lang
         if a_en:
             return a_en, s_en, "english_db", lang
 
@@ -938,7 +987,8 @@ log.info("Models ready")
 
 eng_en.load(mongo, COLLECTION, EN_Q_KEY, EN_A_KEY)
 eng_hi.load(mongo, COLLECTION, HI_Q_KEY, HI_A_KEY)
-log.info(f"EN:{eng_en.ok}/{eng_en.n}  HI:{eng_hi.ok}/{eng_hi.n}")
+eng_gu.load(mongo, COLLECTION, GU_Q_KEY, GU_A_KEY)
+log.info(f"EN:{eng_en.ok}/{eng_en.n}  HI:{eng_hi.ok}/{eng_hi.n}  GU:{eng_gu.ok}/{eng_gu.n}")
 
 db_watcher.start(mongo)
 
@@ -972,7 +1022,8 @@ def _transcribe_sarvam(wav_path):
             return None, None
 
         dev = len(re.findall(r"[\u0900-\u097F]", text))
-        lang = "hi" if dev >= 2 else "en"
+        guj = len(re.findall(r"[\u0A80-\u0AFF]", text))
+        lang = "gu" if guj >= 2 else ("hi" if dev >= 2 else "en")
         log.info(f"Sarvam lang={lang} {ms:.0f}ms '{text[:80]}'")
         return text, lang
     except Exception as e:
@@ -1013,6 +1064,9 @@ def _transcribe_whisper(wav_path):
                 log.info(f"Whisper en-retry: '{text[:80]}'")
 
         dev = len(re.findall(r"[\u0900-\u097F]", text))
+        guj = len(re.findall(r"[\u0A80-\u0AFF]", text))
+        if guj >= 2 or det in ("gu"):
+            return text, "gu"
         if dev >= 2 or det in ("hi", "ne", "mr"):
             return text, "hi"
         return text, "en"
@@ -1034,8 +1088,8 @@ def transcribe(wav_path):
 
 async def tts(text, lang_hint: str = None):
     try:
-        lang  = lang_hint if lang_hint in ("hi", "hinglish") else lang_detect(text)
-        voice = VOICE_HI if lang in ("hi", "hinglish") else VOICE_EN
+        lang  = lang_hint if lang_hint in ("hi", "hinglish", "gu") else lang_detect(text)
+        voice = VOICE_GU if lang == "gu" else (VOICE_HI if lang in ("hi", "hinglish") else VOICE_EN)
 
         # SPEED: collect audio chunks directly into memory; no tmp file I/O
         chunks = []
@@ -1090,6 +1144,7 @@ async def health():
         "min": MIN_MATCH, "sem": SEM_FLOOR,
         "en": {"ok": eng_en.ok, "n": eng_en.n},
         "hi": {"ok": eng_hi.ok, "n": eng_hi.n},
+        "gu": {"ok": eng_gu.ok, "n": eng_gu.n},
         "cache": cache.stats(), "db_watcher": "running",
     }
 
@@ -1099,6 +1154,7 @@ async def debug():
     return {
         "en": {"n": eng_en.n, "ok": eng_en.ok, "q": eng_en.qs[:3]},
         "hi": {"n": eng_hi.n, "ok": eng_hi.ok, "q": eng_hi.qs[:3]},
+        "gu": {"n": eng_gu.n, "ok": eng_gu.ok, "q": eng_gu.qs[:3]},
     }
 
 
@@ -1120,7 +1176,7 @@ async def chat(req: In):
         "detected_language": r["language"],
         "response_time_ms": round(ms),
         "audio_data": a,
-        "video_url": None,
+        "video_url": "/avatar.mp4" if a else None,
     }
 
 
@@ -1137,7 +1193,7 @@ async def chat_voice(req: In):
         "confidence": r["confidence"], "source": r["source"],
         "detected_language": r["language"],
         "audio_data": a,
-        "video_url": None,
+        "video_url": "/avatar.mp4" if a else None,
     }
 
 
@@ -1186,13 +1242,14 @@ async def voice_chat(file: UploadFile = File(...)):
         log.info(f"VOICE: {ms:.0f}ms stt={stt_lang} lang={r['language']}")
         return {
             "user_text": ut,
-            "text": r["answer"], "response": r["answer"],
+            "text": r["answer"],
+            "response": r["answer"],
+            "confidence": r["confidence"],
+            "source": r["source"],
             "detected_language": r["language"],
-            "stt_language": stt_lang,
-            "confidence": r["confidence"], "source": r["source"],
             "response_time_ms": round(ms),
             "audio_data": a,
-            "video_url": None,
+            "video_url": "/avatar.mp4" if a else None,
         }
     except HTTPException:
         raise
@@ -1217,8 +1274,9 @@ async def train(file: UploadFile = File(...)):
         mongo[COLLECTION].insert_many(data)
         eng_en.load(mongo, COLLECTION, EN_Q_KEY, EN_A_KEY)
         eng_hi.load(mongo, COLLECTION, HI_Q_KEY, HI_A_KEY)
+        eng_gu.load(mongo, COLLECTION, GU_Q_KEY, GU_A_KEY)
         cache.clear()
-        return {"status": "ok", "en": eng_en.n, "hi": eng_hi.n}
+        return {"status": "ok", "en": eng_en.n, "hi": eng_hi.n, "gu": eng_gu.n}
     except json.JSONDecodeError:
         raise HTTPException(400, "Bad JSON")
     except HTTPException: raise
@@ -1236,8 +1294,9 @@ async def train_hindi(file: UploadFile = File(...)):
         mongo[COLLECTION].insert_many(data)
         eng_en.load(mongo, COLLECTION, EN_Q_KEY, EN_A_KEY)
         eng_hi.load(mongo, COLLECTION, HI_Q_KEY, HI_A_KEY)
+        eng_gu.load(mongo, COLLECTION, GU_Q_KEY, GU_A_KEY)
         cache.clear()
-        return {"status": "ok", "en": eng_en.n, "hi": eng_hi.n}
+        return {"status": "ok", "en": eng_en.n, "hi": eng_hi.n, "gu": eng_gu.n}
     except json.JSONDecodeError:
         raise HTTPException(400, "Bad JSON")
     except HTTPException: raise
@@ -1249,8 +1308,9 @@ async def train_hindi(file: UploadFile = File(...)):
 async def reload():
     eng_en.load(mongo, COLLECTION, EN_Q_KEY, EN_A_KEY)
     eng_hi.load(mongo, COLLECTION, HI_Q_KEY, HI_A_KEY)
+    eng_gu.load(mongo, COLLECTION, GU_Q_KEY, GU_A_KEY)
     cache.clear()
-    return {"status": "ok", "en": eng_en.n, "hi": eng_hi.n}
+    return {"status": "ok", "en": eng_en.n, "hi": eng_hi.n, "gu": eng_gu.n}
 
 
 @app.on_event("shutdown")
