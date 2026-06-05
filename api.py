@@ -14,17 +14,18 @@ from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
 from typing import Optional
 from difflib import SequenceMatcher
+from dotenv import load_dotenv
 
 import numpy as np
 from fastapi import FastAPI, UploadFile, File, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer, util
 from rank_bm25 import BM25Okapi
 import requests
 import edge_tts
-from faster_whisper import WhisperModel
-from mongo_config import db
 
 
 # ============================================================
@@ -37,6 +38,8 @@ LOG_DIR    = os.path.join(BASE_DIR, "logs")
 
 for _d in [TEMP_DIR, LOG_DIR]:
     os.makedirs(_d, exist_ok=True)
+
+load_dotenv()
 
 VOICE_EN = "en-IN-PrabhatNeural"
 VOICE_HI = "hi-IN-MadhurNeural"
@@ -54,17 +57,13 @@ MIN_MATCH  = 0.35
 SEM_FLOOR  = 0.25
 EARLY_EXIT = 0.65
 TOP_K      = 50
-STT_MODEL  = "base"
-
-SARVAM_API_KEY = "sk_fsvgettt_5gzaYyyoosSGTNWOZL2mFKVR"
-SARVAM_API_URL = "https://api.sarvam.ai/speech-to-text"
+SARVAM_API_KEY = os.getenv("SARVAM_API_KEY")
+if not SARVAM_API_KEY:
+    raise RuntimeError("SARVAM_API_KEY must be set in .env file")
+SARVAM_API_URL = os.getenv("SARVAM_API_URL", "https://api.sarvam.ai/speech-to-text")
 
 # SPEED: thread pool for CPU-bound work inside async endpoints
 _CPU_POOL = ThreadPoolExecutor(max_workers=2)
-
-HINDI_CONFUSED_LANGS = {
-    "ur", "ne", "mr", "pa", "bn", "ar", "fa", "ja", "zh"
-}
 
 # ============================================================
 # LOGGING
@@ -154,15 +153,6 @@ _HARD_CONFLICTS = {
 # ============================================================
 # STT PROMPT — names Whisper must recognise correctly
 # ============================================================
-
-STT_INITIAL_PROMPT = (
-    "O.P. Jindal, OP Jindal, O P Jindal, Jindal Steel, Savitri Devi Jindal, Savitri Devi, "
-    "Naveen Jindal, Sajjan Jindal, Prithviraj Jindal, Ratan Jindal, "
-    "Vidya Devi, Shanti Devi, Netram Jindal, Kanshi Ram, "
-    "Hisar, Haryana, Nalwa, Kurukshetra, Lok Sabha, "
-    "parliamentary constituency, personal motto, "
-    "Jindal Group, Jindal Industries, JSPL, JSW Steel."
-)
 
 
 def extract_intent(text: str) -> str:
@@ -638,14 +628,18 @@ class Engine:
         c = (q + " " + a).lower()
         return any(m in c for m in ["jindal", "o.p.", "om prakash", "op jindal"])
 
-    def load(self, mdb, col, qk, ak):
+    def load(self, json_path, qk, ak):
         t0 = time.time()
         try:
-            data = list(mdb[col].find({}, {"_id": 0}))
-            if not data:
-                log.warning(f"[{self.name}] {col} EMPTY")
+            if not os.path.exists(json_path):
+                log.error(f"[{self.name}] {json_path} NOT FOUND")
                 return
-            log.info(f"[{self.name}] {col}: {len(data)} records keys={list(data[0].keys())}")
+            with open(json_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if not data:
+                log.warning(f"[{self.name}] {json_path} EMPTY")
+                return
+            log.info(f"[{self.name}] {json_path}: {len(data)} records")
 
             qs, ans, qn, qt = [], [], [], []
             for item in data:
@@ -813,47 +807,6 @@ eng_gu = Engine("GU")
 
 
 # ============================================================
-# DYNAMIC DB WATCHER
-# ============================================================
-
-class DBWatcher:
-    def __init__(self, interval_sec=30):
-        self.interval  = interval_sec
-        self._stop     = threading.Event()
-        self._last_cnt = -1
-        self._thread   = None
-
-    def _check(self, mdb):
-        try:
-            cnt = mdb[COLLECTION].count_documents({})
-            if self._last_cnt == -1:
-                self._last_cnt = cnt; return
-            if cnt != self._last_cnt:
-                log.info(f"[DBWatcher] reloading...")
-                eng_en.load(mdb, COLLECTION, EN_Q_KEY, EN_A_KEY)
-                eng_hi.load(mdb, COLLECTION, HI_Q_KEY, HI_A_KEY)
-                eng_gu.load(mdb, COLLECTION, GU_Q_KEY, GU_A_KEY)
-                cache.clear(); self._last_cnt = cnt
-        except Exception as e:
-            log.error(f"[DBWatcher] {e}")
-
-    def _run(self, mdb):
-        log.info(f"[DBWatcher] started (every {self.interval}s)")
-        while not self._stop.wait(self.interval):
-            self._check(mdb)
-
-    def start(self, mdb):
-        self._check(mdb)
-        self._thread = threading.Thread(target=self._run, args=(mdb,), daemon=True)
-        self._thread.start()
-
-    def stop(self): self._stop.set()
-
-
-db_watcher = DBWatcher(interval_sec=30)
-
-
-# ============================================================
 # DUAL SEARCH  (SPEED: encode query ONCE, share embedding)
 # ============================================================
 
@@ -966,12 +919,7 @@ app.add_middleware(
     allow_credentials=True, allow_methods=["*"], allow_headers=["*"],
 )
 
-mongo = db.db
-log.info(f"MongoDB: {mongo.name}")
-try:
-    log.info(f"DB: {mongo[COLLECTION].count_documents({})} records")
-except Exception as e:
-    log.error(f"MongoDB: {e}")
+DATA_PATH = os.path.join(BASE_DIR, "jindal_data.json")
 
 try:
     subprocess.run(["ffmpeg", "-version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -981,16 +929,12 @@ except FileNotFoundError:
 
 log.info("Loading SentenceTransformer...")
 embed_model = SentenceTransformer("multi-qa-MiniLM-L6-cos-v1")
-log.info(f"Loading Whisper '{STT_MODEL}'...")
-stt_model = WhisperModel(STT_MODEL, device="cpu", compute_type="int8")
 log.info("Models ready")
 
-eng_en.load(mongo, COLLECTION, EN_Q_KEY, EN_A_KEY)
-eng_hi.load(mongo, COLLECTION, HI_Q_KEY, HI_A_KEY)
-eng_gu.load(mongo, COLLECTION, GU_Q_KEY, GU_A_KEY)
+eng_en.load(DATA_PATH, EN_Q_KEY, EN_A_KEY)
+eng_hi.load(DATA_PATH, HI_Q_KEY, HI_A_KEY)
+eng_gu.load(DATA_PATH, GU_Q_KEY, GU_A_KEY)
 log.info(f"EN:{eng_en.ok}/{eng_en.n}  HI:{eng_hi.ok}/{eng_hi.n}  GU:{eng_gu.ok}/{eng_gu.n}")
-
-db_watcher.start(mongo)
 
 
 # ============================================================
@@ -1031,55 +975,11 @@ def _transcribe_sarvam(wav_path):
         return None, None
 
 
-def _transcribe_whisper(wav_path):
-    """Fallback using faster-whisper."""
-    try:
-        t0 = time.time()
-        segs, info = stt_model.transcribe(
-            wav_path,
-            beam_size=1,
-            vad_filter=True,
-            initial_prompt=STT_INITIAL_PROMPT,
-        )
-        text = " ".join(s.text for s in segs).strip()
-        det  = info.language
-        prob = info.language_probability
-        ms   = (time.time() - t0) * 1000
-        log.info(f"Whisper lang={det} prob={prob:.2f} {ms:.0f}ms '{text[:80]}'")
-
-        if not text or len(text) < 2:
-            return "", "en"
-
-        if det == "en" and prob < 0.5 and len(text) > 2:
-            segs2, _ = stt_model.transcribe(
-                wav_path,
-                beam_size=3,
-                language="en",
-                vad_filter=True,
-                initial_prompt=STT_INITIAL_PROMPT,
-            )
-            t2 = " ".join(s.text for s in segs2).strip()
-            if t2 and len(t2) >= len(text):
-                text = t2
-                log.info(f"Whisper en-retry: '{text[:80]}'")
-
-        dev = len(re.findall(r"[\u0900-\u097F]", text))
-        guj = len(re.findall(r"[\u0A80-\u0AFF]", text))
-        if guj >= 2 or det in ("gu"):
-            return text, "gu"
-        if dev >= 2 or det in ("hi", "ne", "mr"):
-            return text, "hi"
-        return text, "en"
-    except Exception as e:
-        log.error(f"Whisper error: {e}", exc_info=True)
-        return "", "en"
-
-
 def transcribe(wav_path):
     text, lang = _transcribe_sarvam(wav_path)
     if text is not None:
         return text, lang
-    return _transcribe_whisper(wav_path)
+    return "", "en"
 
 
 # ============================================================
@@ -1140,7 +1040,7 @@ class In(BaseModel):
 @app.get("/health")
 async def health():
     return {
-        "v": "9.1", "stt": STT_MODEL,
+        "v": "9.2", "stt": "sarvam",
         "min": MIN_MATCH, "sem": SEM_FLOOR,
         "en": {"ok": eng_en.ok, "n": eng_en.n},
         "hi": {"ok": eng_hi.ok, "n": eng_hi.n},
@@ -1270,11 +1170,11 @@ async def train(file: UploadFile = File(...)):
         data = json.loads(await file.read())
         if not isinstance(data, list) or not data:
             raise HTTPException(400, "Need list")
-        mongo[COLLECTION].delete_many({})
-        mongo[COLLECTION].insert_many(data)
-        eng_en.load(mongo, COLLECTION, EN_Q_KEY, EN_A_KEY)
-        eng_hi.load(mongo, COLLECTION, HI_Q_KEY, HI_A_KEY)
-        eng_gu.load(mongo, COLLECTION, GU_Q_KEY, GU_A_KEY)
+        with open(DATA_PATH, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        eng_en.load(DATA_PATH, EN_Q_KEY, EN_A_KEY)
+        eng_hi.load(DATA_PATH, HI_Q_KEY, HI_A_KEY)
+        eng_gu.load(DATA_PATH, GU_Q_KEY, GU_A_KEY)
         cache.clear()
         return {"status": "ok", "en": eng_en.n, "hi": eng_hi.n, "gu": eng_gu.n}
     except json.JSONDecodeError:
@@ -1290,11 +1190,11 @@ async def train_hindi(file: UploadFile = File(...)):
         data = json.loads(await file.read())
         if not isinstance(data, list) or not data:
             raise HTTPException(400, "Need list")
-        mongo[COLLECTION].delete_many({})
-        mongo[COLLECTION].insert_many(data)
-        eng_en.load(mongo, COLLECTION, EN_Q_KEY, EN_A_KEY)
-        eng_hi.load(mongo, COLLECTION, HI_Q_KEY, HI_A_KEY)
-        eng_gu.load(mongo, COLLECTION, GU_Q_KEY, GU_A_KEY)
+        with open(DATA_PATH, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        eng_en.load(DATA_PATH, EN_Q_KEY, EN_A_KEY)
+        eng_hi.load(DATA_PATH, HI_Q_KEY, HI_A_KEY)
+        eng_gu.load(DATA_PATH, GU_Q_KEY, GU_A_KEY)
         cache.clear()
         return {"status": "ok", "en": eng_en.n, "hi": eng_hi.n, "gu": eng_gu.n}
     except json.JSONDecodeError:
@@ -1306,18 +1206,16 @@ async def train_hindi(file: UploadFile = File(...)):
 @app.post("/reload/")
 @app.post("/reload")
 async def reload():
-    eng_en.load(mongo, COLLECTION, EN_Q_KEY, EN_A_KEY)
-    eng_hi.load(mongo, COLLECTION, HI_Q_KEY, HI_A_KEY)
-    eng_gu.load(mongo, COLLECTION, GU_Q_KEY, GU_A_KEY)
+    eng_en.load(DATA_PATH, EN_Q_KEY, EN_A_KEY)
+    eng_hi.load(DATA_PATH, HI_Q_KEY, HI_A_KEY)
+    eng_gu.load(DATA_PATH, GU_Q_KEY, GU_A_KEY)
     cache.clear()
     return {"status": "ok", "en": eng_en.n, "hi": eng_hi.n, "gu": eng_gu.n}
 
 
 @app.on_event("shutdown")
 async def shutdown():
-    db_watcher.stop()
     _CPU_POOL.shutdown(wait=False)
-    log.info("DBWatcher stopped")
 
 
 @app.middleware("http")
@@ -1329,6 +1227,11 @@ async def log_req(req: Request, call_next):
         log.info(f"{req.method} {p} {res.status_code} {(time.time()-t0)*1000:.0f}ms")
     return res
 
+
+# --- Serve frontend build ---
+FRONTEND_DIST = os.path.join(BASE_DIR, "frontend", "dist")
+if os.path.isdir(FRONTEND_DIST):
+    app.mount("/", StaticFiles(directory=FRONTEND_DIST, html=True), name="frontend")
 
 if __name__ == "__main__":
     import uvicorn

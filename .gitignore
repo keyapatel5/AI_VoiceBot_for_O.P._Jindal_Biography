@@ -9,3 +9,7 @@ tmp_*
 logs/
 tmp_audio/
 generated_audio/
+.env
+.vscode/
+*.err.txt
+*.out.txt
