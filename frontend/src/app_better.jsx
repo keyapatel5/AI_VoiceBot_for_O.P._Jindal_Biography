@@ -150,7 +150,7 @@ export default function App() {
             className="w-full h-full flex flex-col p-4 sm:p-6 lg:p-12"
           >
             {/* MAIN BODY */}
-            <div className="flex-1 flex flex-col lg:flex-row gap-6 lg:gap-12 min-h-0">
+            <div className="flex-1 flex flex-col lg:flex-row gap-6 lg:gap-12 overflow-hidden min-h-0">
 
               {/* LEFT: CHRONOLOGY — desktop only */}
               <aside className="hidden lg:flex flex-col w-[300px] xl:w-[350px] border-r border-stone-200 pr-8 xl:pr-12 overflow-y-auto no-scrollbar shrink-0">
@@ -171,34 +171,33 @@ export default function App() {
               <div className="flex-1 flex flex-col min-h-0">
 
                 {/* PORTRAIT */}
-               <main className="flex-1 flex flex-col items-center justify-center relative min-h-0">
-  <div
-    className={cn(
-      "rounded-full overflow-hidden relative shadow-2xl transition-all duration-1000",
-      "w-52 h-52 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-[420px] lg:h-[420px] xl:w-[500px] xl:h-[500px]",
-      isSpeaking ? "scale-105 origin-center" : "grayscale-[0.8] opacity-80"
-    )}
-    style={{ willChange: 'transform' }}
-  >
-    <video
-      ref={videoRef}
-      src="/avatar.mp4"
-      poster="/op.png"
-      muted
-      loop
-      playsInline
-      className="w-full h-full object-cover rounded-full"
-      style={{ objectPosition: 'center top' }}
-    />
-  </div>
+                <main className="flex-1 flex flex-col items-center justify-center relative min-h-0">
+                  <div
+  className={cn(
+    "rounded-full overflow-hidden relative shadow-2xl transition-all duration-1000",
+    "w-52 h-52 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-[420px] lg:h-[420px] xl:w-[500px] xl:h-[500px]",
+    isSpeaking ? "scale-105" : "grayscale-[0.8] opacity-80"
+  )}
+>
+                    <video
+                      ref={videoRef}
+                      src="/avatar.mp4"
+                      poster="/op.png"
+                      muted
+                      loop
+                      playsInline
+                      className="w-full h-full object-cover rounded-full scale-[1.05]"
+                      style={{ objectPosition: 'center 15%' }}
+                    />
+                  </div>
 
-  <div className="mt-6 sm:mt-10 text-center">
-    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif tracking-tight">Om Prakash Jindal</h2>
-    <p className="text-stone-400 text-[10px] uppercase tracking-[0.4em] mt-2 font-bold">
-      {isSpeaking ? 'Speaking' : 'Ready'}
-    </p>
-  </div>
-</main>
+                  <div className="mt-6 sm:mt-10 text-center">
+                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif tracking-tight">Om Prakash Jindal</h2>
+                    <p className="text-stone-400 text-[10px] uppercase tracking-[0.4em] mt-2 font-bold">
+                      {isSpeaking ? 'Speaking' : 'Ready'}
+                    </p>
+                  </div>
+                </main>
 
                 {/* SEARCH BAR */}
                 <footer className="w-full pt-4 pb-4 sm:pb-6 lg:pb-8 shrink-0">
